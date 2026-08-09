@@ -11,17 +11,14 @@ import { getSessionExpiry, SESSION_DURATION_MS } from "../utils/session.js";
 
 const prisma = new PrismaClient();
 
-const cookieDomain = process.env.COOKIE_DOMAIN?.trim();
-
 const cookieOptions = {
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",
-  // Lax is enough for same-site subdomains and avoids strict-cookie edge cases.
-  sameSite: "lax" as const,
+  // Same-origin deployment (front + api share movies.rivierenathan.fr), so
+  // the cookie never needs to cross sites.
+  sameSite: "strict" as const,
   maxAge: SESSION_DURATION_MS,
-  // Use root path so cookie is sent for both /api/* (dev) and /movies-api/api/* (prod proxy).
   path: "/",
-  ...(cookieDomain ? { domain: cookieDomain } : {}),
 };
 
 export const authController = {

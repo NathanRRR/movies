@@ -1,0 +1,48 @@
+services:
+  db:
+    image: mariadb:11
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+      MARIADB_DATABASE: ${MARIADB_DATABASE:-movies}
+      MARIADB_USER: ${MARIADB_USER}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: mysql://${MARIADB_USER}:${MARIADB_PASSWORD}@db:3306/${MARIADB_DATABASE:-movies}
+      PORT: 4000
+      NODE_ENV: production
+      TMDB_API_KEY: ${TMDB_API_KEY}
+      ADMIN_PASSWORD_HASH: ${ADMIN_PASSWORD_HASH}
+      FORCE_ADMIN_PASSWORD_RESET: ${FORCE_ADMIN_PASSWORD_RESET:-false}
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:${API_PORT:-4000}:4000"
+
+  # One-shot build: `docker compose run --rm web-build`
+  # Builds the static front and copies it into ${WEB_DIST_PATH} (served directly by host nginx).
+  web-build:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    profiles: ["build"]
+    volumes:
+      - ${WEB_DIST_PATH:-./web/dist}:/output
+
+volumes:
+  mariadb_data:

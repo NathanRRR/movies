@@ -1,0 +1,32 @@
+# ---- Build stage ----
+FROM node:24-alpine AS builder
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+RUN npm ci
+
+COPY prisma ./prisma
+RUN npx prisma generate
+
+COPY tsconfig.json ./
+COPY src ./src
+RUN npm run build
+
+# ---- Runtime stage ----
+FROM node:24-alpine AS runtime
+WORKDIR /app
+ENV NODE_ENV=production
+
+# Prisma's query engine needs openssl on alpine
+RUN apk add --no-cache openssl
+
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev
+
+COPY prisma ./prisma
+RUN npx prisma generate
+
+COPY --from=builder /app/dist ./dist
+
+EXPOSE 4000
+CMD ["sh", "-c", "npx prisma migrate deploy && node dist/src/index.js"]
