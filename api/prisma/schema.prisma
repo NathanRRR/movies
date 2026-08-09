@@ -1,0 +1,67 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ============ USER MANAGEMENT ============
+
+model User {
+  id        Int       @id @default(autoincrement())
+  /// Hashed password (bcrypt)
+  password  String
+  
+  sessions  Session[]
+  
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  
+  @@map("users")
+}
+
+model Session {
+  id              String    @id @default(uuid())
+  userId          Int
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  /// When session expires (NOW + 14 days at creation, reset on activity)
+  expiresAt       DateTime
+  
+  /// Last time this session was used (for sliding window)
+  lastActivityAt  DateTime  @default(now())
+  
+  createdAt       DateTime  @default(now())
+  
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("sessions")
+}
+
+// ============ EXISTING MODELS (unchanged) ============
+
+model Movie {
+  id           Int       @id @default(autoincrement())
+  tmdbId       Int       @unique
+  title        String
+  posterUrl    String?
+  directorName String?
+  releaseDate  String?   // e.g., "2010" or "2010-07-16"
+  synopsis     String?   @db.Text // Movie plot summary
+  rank         Int
+  lastWatchedAt DateTime? // When user last watched this movie
+  reviewText   String?   @db.Text // User's written review/notes
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([rank])
+  @@index([title])
+  @@index([directorName])
+}
