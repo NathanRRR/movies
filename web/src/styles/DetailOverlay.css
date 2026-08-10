@@ -287,11 +287,13 @@
 @media (max-width: 640px) {
   .detailOverlay {
     padding: 0;
+    padding-top: max(16px, env(safe-area-inset-top));
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
   }
 
   .detailOverlayContent {
-    border-radius: 16px 16px 0 0;
-    max-height: 100vh;
+    border-radius: 16px;
+    max-height: 100%;
   }
 
   .movieTitle {
