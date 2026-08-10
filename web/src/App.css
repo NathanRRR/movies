@@ -306,6 +306,18 @@
     padding: 16px 10px 28px;
   }
 
+  .pageHeader {
+    flex-wrap: wrap;
+  }
+
+  .headerTitleWrap {
+    flex-basis: 100%;
+  }
+
+  .pageHeader h1 {
+    font-size: 1.5rem;
+  }
+
   .movieCard {
     grid-template-columns: 30px 46px 72px 1fr;
     gap: 10px;

@@ -23,3 +23,4 @@ Thumbs.db
 # Local tooling / secrets
 CLAUDE.md
 logins.txt
+local_debug/
