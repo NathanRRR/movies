@@ -5,6 +5,7 @@ import SortableMovieCard, { type SortableMovie } from './SortableMovieCard'
 interface VirtualizedMovieCardListProps {
   movies: SortableMovie[]
   isDragDisabled?: boolean
+  useSequentialRanks?: boolean
   highlightMovieId: number | null
   dropTargetMovieId: number | null
   onOpenMovie: (movie: SortableMovie) => void
@@ -18,6 +19,7 @@ const ROW_ESTIMATED_SIZE = 188
 const VirtualizedMovieCardList: React.FC<VirtualizedMovieCardListProps> = ({
   movies,
   isDragDisabled = false,
+  useSequentialRanks = false,
   highlightMovieId,
   dropTargetMovieId,
   onOpenMovie,
@@ -107,6 +109,7 @@ const VirtualizedMovieCardList: React.FC<VirtualizedMovieCardListProps> = ({
                   movieCardRefs.current.delete(movie.id)
                 }}
                 movie={movie}
+                displayRank={useSequentialRanks ? virtualRow.index + 1 : undefined}
                 isDragDisabled={isDragDisabled}
                 isHighlighted={highlightMovieId === movie.id}
                 isDropTarget={dropTargetMovieId === movie.id}

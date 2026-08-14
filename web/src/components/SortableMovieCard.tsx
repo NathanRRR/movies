@@ -1,6 +1,7 @@
 import { forwardRef } from 'react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { getReleaseYear } from '../utils/yearFilter'
 
 export type SortableMovie = {
   id: number
@@ -19,6 +20,7 @@ export type SortableMovie = {
 
 interface SortableMovieCardProps {
   movie: SortableMovie
+  displayRank?: number
   isDragDisabled?: boolean
   hideDragHandle?: boolean
   isHighlighted?: boolean
@@ -28,7 +30,7 @@ interface SortableMovieCardProps {
 }
 
 const SortableMovieCard = forwardRef<HTMLElement, SortableMovieCardProps>(
-  ({ movie, isDragDisabled = false, hideDragHandle = false, isHighlighted = false, isDropTarget = false, onOpen, registerCardRef }, forwardedRef) => {
+  ({ movie, displayRank, isDragDisabled = false, hideDragHandle = false, isHighlighted = false, isDropTarget = false, onOpen, registerCardRef }, forwardedRef) => {
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
       useSortable({
         id: movie.id,
@@ -51,8 +53,8 @@ const SortableMovieCard = forwardRef<HTMLElement, SortableMovieCardProps>(
       onOpen(movie)
     }
 
-    const releaseYear = movie.releaseDate?.slice(0, 4)?.trim()
-    const hasValidYear = typeof releaseYear === 'string' && /^\d{4}$/.test(releaseYear)
+    const releaseYear = getReleaseYear(movie.releaseDate)
+    const hasValidYear = releaseYear !== null
 
     return (
       <article
@@ -92,7 +94,7 @@ const SortableMovieCard = forwardRef<HTMLElement, SortableMovieCardProps>(
           </button>
         ) : null}
 
-        <div className="rank">#{movie.rank}</div>
+        <div className="rank">#{displayRank ?? movie.rank}</div>
         <img
           className="poster"
           src={movie.posterUrl ?? 'https://via.placeholder.com/92x138?text=No+Poster'}

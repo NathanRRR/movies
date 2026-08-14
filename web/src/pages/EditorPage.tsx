@@ -23,7 +23,9 @@ import DetailOverlay from '../components/DetailOverlay'
 import LogoutButton from '../components/LogoutButton'
 import MovieCardList from '../components/MovieCardList'
 import VirtualizedMovieCardList from '../components/VirtualizedMovieCardList'
+import YearRangeFilter from '../components/YearRangeFilter'
 import { apiUrl } from '../api'
+import { EMPTY_YEAR_RANGE, isYearRangeActive, matchesYearRange, type YearRange } from '../utils/yearFilter'
 
 type MovieCard = {
   id: number
@@ -56,6 +58,7 @@ function EditorPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [hasError, setHasError] = useState(false)
   const [query, setQuery] = useState('')
+  const [yearRange, setYearRange] = useState<YearRange>(EMPTY_YEAR_RANGE)
   const [selectedMovie, setSelectedMovie] = useState<MovieCard | null>(null)
   const [isOverlayOpen, setIsOverlayOpen] = useState(false)
   const [isAddMovieFlowOpen, setIsAddMovieFlowOpen] = useState(false)
@@ -189,7 +192,7 @@ function EditorPage() {
   }
 
   const normalizedQuery = query.trim().toLowerCase()
-  const isReorderEnabled = normalizedQuery.length === 0
+  const isReorderEnabled = normalizedQuery.length === 0 && !isYearRangeActive(yearRange)
   const shouldUseVirtualizedList =
     ENABLE_VIRTUALIZED_LIST &&
     Number.isFinite(VIRTUALIZATION_THRESHOLD) &&
@@ -263,6 +266,10 @@ function EditorPage() {
   }
 
   const filteredMovies = movies.filter((movie) => {
+    if (!matchesYearRange(movie.releaseDate, yearRange)) {
+      return false
+    }
+
     if (!normalizedQuery) {
       return true
     }
@@ -276,12 +283,13 @@ function EditorPage() {
     )
   })
 
+  const hasActiveFilters = normalizedQuery.length > 0 || isYearRangeActive(yearRange)
   const showLibraryEmptyState = !isLoading && !hasError && movies.length === 0
   const showFilteredNoResultState =
     !isLoading &&
     !hasError &&
     movies.length > 0 &&
-    normalizedQuery.length > 0 &&
+    hasActiveFilters &&
     filteredMovies.length === 0
 
   useEffect(() => {
@@ -351,6 +359,10 @@ function EditorPage() {
         </div>
       ) : null}
 
+      {!isLoading && !hasError && movies.length > 0 ? (
+        <YearRangeFilter range={yearRange} onChange={setYearRange} />
+      ) : null}
+
       {isLoading ? <p className="state">Chargement...</p> : null}
       {hasError ? <p className="state error">Impossible de charger la liste.</p> : null}
 
@@ -364,7 +376,7 @@ function EditorPage() {
       {showFilteredNoResultState ? (
         <section className="emptyState">
           <h2>Aucun resultat</h2>
-          <p>Aucun film ne correspond a ta recherche.</p>
+          <p>Aucun film ne correspond a ta recherche ou a la periode selectionnee.</p>
         </section>
       ) : null}
 
@@ -407,6 +419,7 @@ function EditorPage() {
             <VirtualizedMovieCardList
               movies={filteredMovies}
               isDragDisabled
+              useSequentialRanks={isYearRangeActive(yearRange)}
               highlightMovieId={highlightMovieId}
               dropTargetMovieId={dropTargetMovieId}
               onOpenMovie={handleOpenOverlay}
@@ -418,6 +431,7 @@ function EditorPage() {
             <MovieCardList
               movies={filteredMovies}
               isDragDisabled
+              useSequentialRanks={isYearRangeActive(yearRange)}
               highlightMovieId={highlightMovieId}
               dropTargetMovieId={dropTargetMovieId}
               onOpenMovie={handleOpenOverlay}

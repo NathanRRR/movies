@@ -2,11 +2,14 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import DetailOverlay from "../components/DetailOverlay";
 import MovieCardList from "../components/MovieCardList";
+import YearRangeFilter from "../components/YearRangeFilter";
 import { authService } from "../services/authService";
 import type { PublicMovie } from "../types/auth";
+import { EMPTY_YEAR_RANGE, isYearRangeActive, matchesYearRange, type YearRange } from "../utils/yearFilter";
 
 export default function PublicPage() {
   const [movies, setMovies] = useState<PublicMovie[]>([]);
+  const [yearRange, setYearRange] = useState<YearRange>(EMPTY_YEAR_RANGE);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedMovie, setSelectedMovie] = useState<PublicMovie | null>(null);
@@ -38,6 +41,8 @@ export default function PublicPage() {
     setSelectedMovie(null);
   };
 
+  const filteredMovies = movies.filter((movie) => matchesYearRange(movie.releaseDate, yearRange));
+
   return (
     <main className="page">
       <header className="pageHeader">
@@ -47,14 +52,19 @@ export default function PublicPage() {
         </div>
       </header>
 
+      {!isLoading && !error && movies.length > 0 ? (
+        <YearRangeFilter range={yearRange} onChange={setYearRange} />
+      ) : null}
+
       {isLoading ? <p className="state">Chargement...</p> : null}
       {error ? <p className="state error">{error}</p> : null}
 
-      {!isLoading && !error && movies.length > 0 ? (
+      {!isLoading && !error && filteredMovies.length > 0 ? (
         <MovieCardList
-          movies={movies}
+          movies={filteredMovies}
           isDragDisabled
           hideDragHandle
+          useSequentialRanks={isYearRangeActive(yearRange)}
           highlightMovieId={null}
           dropTargetMovieId={null}
           onOpenMovie={handleOpenOverlay}
@@ -63,6 +73,10 @@ export default function PublicPage() {
       ) : null}
 
       {!isLoading && !error && movies.length === 0 ? <p className="state">Aucun film disponible.</p> : null}
+
+      {!isLoading && !error && movies.length > 0 && filteredMovies.length === 0 ? (
+        <p className="state">Aucun film sorti durant cette periode.</p>
+      ) : null}
 
       <DetailOverlay
         movie={selectedMovie}
