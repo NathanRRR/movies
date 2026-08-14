@@ -5,6 +5,7 @@ interface MovieCardListProps {
   movies: SortableMovie[]
   isDragDisabled?: boolean
   hideDragHandle?: boolean
+  useSequentialRanks?: boolean
   highlightMovieId: number | null
   dropTargetMovieId: number | null
   onOpenMovie: (movie: SortableMovie) => void
@@ -15,6 +16,7 @@ const MovieCardList: React.FC<MovieCardListProps> = ({
   movies,
   isDragDisabled = false,
   hideDragHandle = false,
+  useSequentialRanks = false,
   highlightMovieId,
   dropTargetMovieId,
   onOpenMovie,
@@ -22,7 +24,7 @@ const MovieCardList: React.FC<MovieCardListProps> = ({
 }) => {
   return (
     <section className="listSection" aria-label="Liste classee des films">
-      {movies.map((movie) => (
+      {movies.map((movie, index) => (
         <SortableMovieCard
           key={movie.id}
           ref={(element) => {
@@ -33,6 +35,7 @@ const MovieCardList: React.FC<MovieCardListProps> = ({
             movieCardRefs.current.delete(movie.id)
           }}
           movie={movie}
+          displayRank={useSequentialRanks ? index + 1 : undefined}
           isDragDisabled={isDragDisabled}
           hideDragHandle={hideDragHandle}
           isHighlighted={highlightMovieId === movie.id}

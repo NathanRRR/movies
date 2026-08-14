@@ -90,6 +90,85 @@
   border-color: #2a6bf2;
 }
 
+.yearFilterWrap {
+  margin-top: 12px;
+}
+
+.yearFilterButton {
+  padding: 8px 14px;
+  border: 1px solid #b6c0cf;
+  border-radius: 999px;
+  background: #fff;
+  color: #425166;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.yearFilterButton:hover {
+  border-color: #2a6bf2;
+  color: #2a6bf2;
+}
+
+.yearFilterButtonActive {
+  background: #2a6bf2;
+  border-color: #2a6bf2;
+  color: #fff;
+}
+
+.yearFilterButtonActive:hover {
+  color: #fff;
+}
+
+.yearFilterPanel {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 10px 12px;
+  border: 1px solid #dbe2ea;
+  border-radius: 10px;
+  background: #f7f9fc;
+}
+
+.yearFilterPanel label {
+  font-size: 0.88rem;
+  color: #425166;
+}
+
+.yearFilterInput {
+  width: 90px;
+  border: 1px solid #b6c0cf;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 0.95rem;
+  background: #fff;
+  color: #111b2a;
+}
+
+.yearFilterInput:focus {
+  outline: 2px solid #2a6bf2;
+  outline-offset: 1px;
+  border-color: #2a6bf2;
+}
+
+.yearFilterResetButton {
+  padding: 7px 12px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #ad1f1f;
+  font-size: 0.86rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.yearFilterResetButton:hover {
+  text-decoration: underline;
+}
+
 .state {
   margin-top: 16px;
 }

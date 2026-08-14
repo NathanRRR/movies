@@ -22,8 +22,10 @@ import AddMovieFlow from '../components/AddMovieFlow'
 import type { SearchResult } from '../components/SearchResultsGrid'
 import DetailOverlay from '../components/DetailOverlay'
 import MovieCardList from '../components/MovieCardList'
+import YearRangeFilter from '../components/YearRangeFilter'
 import { authService } from '../services/authService'
 import type { PublicMovie } from '../types/auth'
+import { EMPTY_YEAR_RANGE, isYearRangeActive, matchesYearRange, type YearRange } from '../utils/yearFilter'
 
 type MovieCard = PublicMovie
 
@@ -38,6 +40,7 @@ export default function DemoPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [hasError, setHasError] = useState(false)
   const [query, setQuery] = useState('')
+  const [yearRange, setYearRange] = useState<YearRange>(EMPTY_YEAR_RANGE)
   const [selectedMovie, setSelectedMovie] = useState<MovieCard | null>(null)
   const [isOverlayOpen, setIsOverlayOpen] = useState(false)
   const [isAddMovieFlowOpen, setIsAddMovieFlowOpen] = useState(false)
@@ -142,11 +145,15 @@ export default function DemoPage() {
   }
 
   const normalizedQuery = query.trim().toLowerCase()
-  const isReorderEnabled = normalizedQuery.length === 0
+  const isReorderEnabled = normalizedQuery.length === 0 && !isYearRangeActive(yearRange)
 
   const filteredMovies = useMemo(
     () =>
       movies.filter((movie) => {
+        if (!matchesYearRange(movie.releaseDate, yearRange)) {
+          return false
+        }
+
         if (!normalizedQuery) {
           return true
         }
@@ -159,7 +166,7 @@ export default function DemoPage() {
           normalizedDirector.includes(normalizedQuery)
         )
       }),
-    [movies, normalizedQuery]
+    [movies, normalizedQuery, yearRange]
   )
 
   const dndSensors = useSensors(
@@ -257,12 +264,13 @@ export default function DemoPage() {
     }
   }
 
+  const hasActiveFilters = normalizedQuery.length > 0 || isYearRangeActive(yearRange)
   const showLibraryEmptyState = !isLoading && !hasError && movies.length === 0
   const showFilteredNoResultState =
     !isLoading &&
     !hasError &&
     movies.length > 0 &&
-    normalizedQuery.length > 0 &&
+    hasActiveFilters &&
     filteredMovies.length === 0
 
   return (
@@ -302,6 +310,10 @@ export default function DemoPage() {
         </div>
       ) : null}
 
+      {!isLoading && !hasError && movies.length > 0 ? (
+        <YearRangeFilter range={yearRange} onChange={setYearRange} />
+      ) : null}
+
       {isLoading ? <p className="state">Chargement...</p> : null}
       {hasError ? <p className="state error">Impossible de charger la liste.</p> : null}
 
@@ -315,7 +327,7 @@ export default function DemoPage() {
       {showFilteredNoResultState ? (
         <section className="emptyState">
           <h2>Aucun resultat</h2>
-          <p>Aucun film ne correspond a ta recherche.</p>
+          <p>Aucun film ne correspond a ta recherche ou a la periode selectionnee.</p>
         </section>
       ) : null}
 
@@ -345,6 +357,7 @@ export default function DemoPage() {
           <MovieCardList
             movies={filteredMovies}
             isDragDisabled
+            useSequentialRanks={isYearRangeActive(yearRange)}
             highlightMovieId={highlightMovieId}
             dropTargetMovieId={dropTargetMovieId}
             onOpenMovie={handleOpenOverlay}
