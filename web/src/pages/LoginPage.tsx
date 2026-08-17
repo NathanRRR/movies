@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Navigate, Link, useNavigate } from "react-router-dom";
+import ThemeToggle from "../components/ThemeToggle";
 import { useAuth } from "../hooks/authContext";
 
 export default function LoginPage() {
@@ -34,6 +35,9 @@ export default function LoginPage() {
         <div className="headerTitleWrap">
           <h1>Connexion Admin</h1>
           <p>Acces protege a ton classement de films</p>
+        </div>
+        <div className="headerActions">
+          <ThemeToggle />
         </div>
       </header>
 

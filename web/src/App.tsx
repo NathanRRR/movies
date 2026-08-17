@@ -2,6 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { useAuth } from "./hooks/authContext";
 import { AuthProvider } from "./hooks/useAuth";
+import { ThemeProvider } from "./hooks/useTheme";
 import DemoPage from "./pages/DemoPage";
 import EditorPage from "./pages/EditorPage";
 import LoginPage from "./pages/LoginPage";
@@ -42,10 +43,12 @@ function AppRoutes() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <AppRoutes />
-      </BrowserRouter>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <BrowserRouter>
+          <AppRoutes />
+        </BrowserRouter>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import DetailOverlay from "../components/DetailOverlay";
 import MovieCardList from "../components/MovieCardList";
+import ThemeToggle from "../components/ThemeToggle";
 import YearRangeFilter from "../components/YearRangeFilter";
 import { authService } from "../services/authService";
 import type { PublicMovie } from "../types/auth";
@@ -49,6 +50,9 @@ export default function PublicPage() {
         <div className="headerTitleWrap">
           <h1>Classement Public</h1>
           <p>Version lecture seule du classement</p>
+        </div>
+        <div className="headerActions">
+          <ThemeToggle />
         </div>
       </header>
 
