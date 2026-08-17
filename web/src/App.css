@@ -11,7 +11,7 @@
 
 .pageHeader p {
   margin-top: 6px;
-  color: #606a78;
+  color: var(--color-text-secondary);
 }
 
 .pageHeader {
@@ -26,15 +26,22 @@
   flex-grow: 1;
 }
 
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
 .demoModeBadge {
   margin-top: 10px;
   display: inline-flex;
   align-items: center;
   padding: 6px 12px;
   border-radius: 999px;
-  border: 1px solid #ffd08a;
-  background: #fff4dd;
-  color: #8a4f00;
+  border: 1px solid var(--color-warning-border);
+  background: var(--color-warning-bg);
+  color: var(--color-warning-text);
   font-size: 0.86rem;
   font-weight: 700;
   letter-spacing: 0.01em;
@@ -43,7 +50,7 @@
 .addMovieButton {
   flex-shrink: 0;
   padding: 10px 16px;
-  background: #2a6bf2;
+  background: var(--color-accent);
   color: white;
   border: none;
   border-radius: 8px;
@@ -55,12 +62,35 @@
 }
 
 .addMovieButton:hover {
-  background: #1f52d4;
+  background: var(--color-accent-hover);
   box-shadow: 0 2px 8px rgba(42, 107, 242, 0.2);
 }
 
 .addMovieButton:active {
   transform: scale(0.98);
+}
+
+.themeToggleButton {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.themeToggleButton:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
 }
 
 .searchWrap {
@@ -71,23 +101,23 @@
   display: block;
   margin-bottom: 6px;
   font-size: 0.92rem;
-  color: #425166;
+  color: var(--color-text-navy);
 }
 
 .searchInput {
   width: 100%;
-  border: 1px solid #b6c0cf;
+  border: 1px solid var(--color-border);
   border-radius: 10px;
   padding: 10px 12px;
   font-size: 1rem;
-  background: #fff;
-  color: #111b2a;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
 }
 
 .searchInput:focus {
-  outline: 2px solid #2a6bf2;
+  outline: 2px solid var(--color-accent);
   outline-offset: 1px;
-  border-color: #2a6bf2;
+  border-color: var(--color-accent);
 }
 
 .yearFilterWrap {
@@ -96,10 +126,10 @@
 
 .yearFilterButton {
   padding: 8px 14px;
-  border: 1px solid #b6c0cf;
+  border: 1px solid var(--color-border);
   border-radius: 999px;
-  background: #fff;
-  color: #425166;
+  background: var(--color-surface);
+  color: var(--color-text-navy);
   font-size: 0.88rem;
   font-weight: 600;
   cursor: pointer;
@@ -107,13 +137,13 @@
 }
 
 .yearFilterButton:hover {
-  border-color: #2a6bf2;
-  color: #2a6bf2;
+  border-color: var(--color-accent);
+  color: var(--color-accent);
 }
 
 .yearFilterButtonActive {
-  background: #2a6bf2;
-  border-color: #2a6bf2;
+  background: var(--color-accent);
+  border-color: var(--color-accent);
   color: #fff;
 }
 
@@ -128,30 +158,30 @@
   gap: 8px;
   margin-top: 10px;
   padding: 10px 12px;
-  border: 1px solid #dbe2ea;
+  border: 1px solid var(--color-border-soft);
   border-radius: 10px;
-  background: #f7f9fc;
+  background: var(--color-surface-alt);
 }
 
 .yearFilterPanel label {
   font-size: 0.88rem;
-  color: #425166;
+  color: var(--color-text-navy);
 }
 
 .yearFilterInput {
   width: 90px;
-  border: 1px solid #b6c0cf;
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   padding: 8px 10px;
   font-size: 0.95rem;
-  background: #fff;
-  color: #111b2a;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
 }
 
 .yearFilterInput:focus {
-  outline: 2px solid #2a6bf2;
+  outline: 2px solid var(--color-accent);
   outline-offset: 1px;
-  border-color: #2a6bf2;
+  border-color: var(--color-accent);
 }
 
 .yearFilterResetButton {
@@ -159,7 +189,7 @@
   border: none;
   border-radius: 8px;
   background: transparent;
-  color: #ad1f1f;
+  color: var(--color-danger);
   font-size: 0.86rem;
   font-weight: 600;
   cursor: pointer;
@@ -174,23 +204,23 @@
 }
 
 .state.error {
-  color: #ad1f1f;
+  color: var(--color-danger);
 }
 
 .state.duplicateNotice {
-  color: #1c4eb8;
-  background: #eaf2ff;
-  border: 1px solid #bdd3ff;
+  color: var(--color-accent-active);
+  background: var(--color-accent-soft-bg);
+  border: 1px solid var(--color-accent-soft-border);
   border-radius: 10px;
   padding: 10px 12px;
 }
 
 .emptyState {
   margin-top: 20px;
-  border: 1px dashed #bfc7d3;
+  border: 1px dashed var(--color-border-strong);
   border-radius: 14px;
   padding: 20px;
-  background: #f7f8fa;
+  background: var(--color-surface-alt);
 }
 
 .emptyState h2 {
@@ -200,7 +230,7 @@
 
 .emptyState p {
   margin-top: 6px;
-  color: #606a78;
+  color: var(--color-text-secondary);
 }
 
 .listSection {
@@ -236,8 +266,8 @@
   grid-template-columns: 34px 60px 92px 1fr;
   gap: 12px;
   align-items: center;
-  background: #ffffff;
-  border: 1px solid #d9dde4;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-soft);
   border-radius: 14px;
   padding: 10px;
   cursor: pointer;
@@ -247,7 +277,7 @@
 }
 
 .movieCard:hover {
-  border-color: #2a6bf2;
+  border-color: var(--color-accent);
   box-shadow: 0 2px 8px rgba(42, 107, 242, 0.12);
 }
 
@@ -257,12 +287,12 @@
 
 .sortableMovieCard.dragging {
   opacity: 0.85;
-  border-color: #2a6bf2;
+  border-color: var(--color-accent);
   box-shadow: 0 8px 18px rgba(42, 107, 242, 0.2);
 }
 
 .sortableMovieCard.dropTarget {
-  border-color: #2a6bf2;
+  border-color: var(--color-accent);
   box-shadow: inset 0 0 0 2px rgba(42, 107, 242, 0.22);
   position: relative;
 }
@@ -292,12 +322,12 @@
 }
 
 .movieCard:focus-visible {
-  outline: 2px solid #2a6bf2;
+  outline: 2px solid var(--color-accent);
   outline-offset: 1px;
 }
 
 .movieCard.duplicateHighlight {
-  border-color: #2a6bf2;
+  border-color: var(--color-accent);
   box-shadow: 0 0 0 2px rgba(42, 107, 242, 0.28);
   animation: pulseHighlight 2.2s ease-out;
 }
@@ -305,10 +335,10 @@
 .dragHandle {
   width: 28px;
   height: 28px;
-  border: 1px solid #c9d4e5;
+  border: 1px solid var(--color-border-strong);
   border-radius: 8px;
-  background: #f5f8fc;
-  color: #61738f;
+  background: var(--color-surface-alt);
+  color: var(--color-text-navy);
   font-size: 14px;
   line-height: 1;
   cursor: grab;
@@ -323,18 +353,18 @@
 }
 
 .dragHandle:hover {
-  border-color: #2a6bf2;
-  color: #2a6bf2;
-  background: #eaf2ff;
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  background: var(--color-accent-soft-bg);
 }
 
 .dragHint {
   display: none;
   margin-top: 12px;
-  color: #5d6c84;
+  color: var(--color-text-secondary);
   font-size: 0.92rem;
-  background: #f5f8fc;
-  border: 1px solid #d9e3f2;
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-accent-soft-border-2);
   border-radius: 10px;
   padding: 10px 12px;
 }
@@ -354,14 +384,14 @@
 .rank {
   font-size: 1.1rem;
   font-weight: 700;
-  color: #1e334f;
+  color: var(--color-text-navy);
   text-align: center;
 }
 
 .poster {
   border-radius: 10px;
   object-fit: cover;
-  background: #e8ebf0;
+  background: var(--color-surface-muted);
 }
 
 .movieInfo h2 {
@@ -376,7 +406,7 @@
 
 .movieInfo p {
   margin: 4px 0 0;
-  color: #606a78;
+  color: var(--color-text-secondary);
   font-size: 0.95rem;
 }
 

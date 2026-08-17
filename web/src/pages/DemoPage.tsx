@@ -22,6 +22,7 @@ import AddMovieFlow from '../components/AddMovieFlow'
 import type { SearchResult } from '../components/SearchResultsGrid'
 import DetailOverlay from '../components/DetailOverlay'
 import MovieCardList from '../components/MovieCardList'
+import ThemeToggle from '../components/ThemeToggle'
 import YearRangeFilter from '../components/YearRangeFilter'
 import { authService } from '../services/authService'
 import type { PublicMovie } from '../types/auth'
@@ -283,13 +284,16 @@ export default function DemoPage() {
             Mode demo - non sauvegarde
           </div>
         </div>
-        <button
-          className="addMovieButton"
-          onClick={() => setIsAddMovieFlowOpen(true)}
-          title="Ajouter un film dans la demo"
-        >
-          + Ajouter un film
-        </button>
+        <div className="headerActions">
+          <button
+            className="addMovieButton"
+            onClick={() => setIsAddMovieFlowOpen(true)}
+            title="Ajouter un film dans la demo"
+          >
+            + Ajouter un film
+          </button>
+          <ThemeToggle />
+        </div>
       </header>
 
       {duplicateNotice ? <p className="state duplicateNotice">{duplicateNotice}</p> : null}

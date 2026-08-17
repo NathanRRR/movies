@@ -22,6 +22,7 @@ import AddMovieFlow from '../components/AddMovieFlow'
 import DetailOverlay from '../components/DetailOverlay'
 import LogoutButton from '../components/LogoutButton'
 import MovieCardList from '../components/MovieCardList'
+import ThemeToggle from '../components/ThemeToggle'
 import VirtualizedMovieCardList from '../components/VirtualizedMovieCardList'
 import YearRangeFilter from '../components/YearRangeFilter'
 import { apiUrl } from '../api'
@@ -329,14 +330,17 @@ function EditorPage() {
           <h1>Mon Classement Films</h1>
           <p>Classement personnel des films vus</p>
         </div>
-        <button
-          className="addMovieButton"
-          onClick={() => setIsAddMovieFlowOpen(true)}
-          title="Add a new movie"
-        >
-          + Ajouter un film
-        </button>
-        <LogoutButton />
+        <div className="headerActions">
+          <button
+            className="addMovieButton"
+            onClick={() => setIsAddMovieFlowOpen(true)}
+            title="Add a new movie"
+          >
+            + Ajouter un film
+          </button>
+          <ThemeToggle />
+          <LogoutButton />
+        </div>
       </header>
 
       {duplicateNotice ? (
