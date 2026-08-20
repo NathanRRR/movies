@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import '../styles/DetailOverlay.css'
+import { useCloseOnBrowserBack } from '../hooks/useCloseOnBrowserBack'
 
 export interface Movie {
   id: number
@@ -35,6 +36,7 @@ export const DetailOverlay: React.FC<DetailOverlayProps> = ({
 }) => {
   const modalRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
+  const requestClose = useCloseOnBrowserBack(isOpen, onClose)
 
   // Edit state
   const [editLastWatchedAt, setEditLastWatchedAt] = useState('')
@@ -67,7 +69,7 @@ export const DetailOverlay: React.FC<DetailOverlayProps> = ({
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && isOpen) {
-        onClose()
+        requestClose()
       }
     }
 
@@ -81,12 +83,12 @@ export const DetailOverlay: React.FC<DetailOverlayProps> = ({
       document.removeEventListener('keydown', handleKeyDown)
       document.body.style.overflow = 'unset'
     }
-  }, [isOpen, onClose])
+  }, [isOpen, requestClose])
 
   // Handle backdrop click (click on overlay background, not the modal content)
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === modalRef.current) {
-      onClose()
+      requestClose()
     }
   }
 
@@ -113,7 +115,7 @@ export const DetailOverlay: React.FC<DetailOverlayProps> = ({
         reviewText: editReviewText,
         rank: safeRank,
       })
-      onClose()
+      requestClose()
     } catch (error) {
       const errorMsg =
         error instanceof Error ? error.message : 'Failed to save changes'
@@ -138,7 +140,7 @@ export const DetailOverlay: React.FC<DetailOverlayProps> = ({
         {/* Close Button */}
         <button
           className="closeButton"
-          onClick={onClose}
+          onClick={requestClose}
           aria-label="Close overlay"
           title="Close (Esc)"
         >

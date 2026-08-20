@@ -3,6 +3,7 @@ import SearchInput from './SearchInput'
 import SearchResultsGrid, { type SearchResult } from './SearchResultsGrid'
 import '../styles/AddMovieFlow.css'
 import { apiUrl } from '../api'
+import { useCloseOnBrowserBack } from '../hooks/useCloseOnBrowserBack'
 
 interface AddMovieFlowProps {
   isOpen: boolean
@@ -59,6 +60,7 @@ export const AddMovieFlow: React.FC<AddMovieFlowProps> = ({
   const contentRef = useRef<HTMLDivElement>(null)
   const rankListRef = useRef<HTMLDivElement>(null)
   const rankItemRefs = useRef(new Map<number, HTMLButtonElement>())
+  const requestClose = useCloseOnBrowserBack(isOpen, onClose)
 
   const resetFormState = useCallback(() => {
     setSearchQuery('')
@@ -98,7 +100,7 @@ export const AddMovieFlow: React.FC<AddMovieFlowProps> = ({
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && isOpen) {
-        onClose()
+        requestClose()
       }
     }
 
@@ -111,7 +113,7 @@ export const AddMovieFlow: React.FC<AddMovieFlowProps> = ({
       document.removeEventListener('keydown', handleKeyDown)
       document.body.style.overflow = 'unset'
     }
-  }, [isOpen, onClose])
+  }, [isOpen, requestClose])
 
   // Debounced search
   useEffect(() => {
@@ -159,7 +161,7 @@ export const AddMovieFlow: React.FC<AddMovieFlowProps> = ({
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === modalRef.current) {
       resetFormState()
-      onClose()
+      requestClose()
     }
   }
 
@@ -194,7 +196,7 @@ export const AddMovieFlow: React.FC<AddMovieFlowProps> = ({
             title: localResult.title,
           })
           resetFormState()
-          onClose()
+          requestClose()
           return
         }
 
@@ -204,7 +206,7 @@ export const AddMovieFlow: React.FC<AddMovieFlowProps> = ({
           title: localResult.title,
         })
         resetFormState()
-        onClose()
+        requestClose()
         return
       }
 
@@ -237,7 +239,7 @@ export const AddMovieFlow: React.FC<AddMovieFlowProps> = ({
             title: selectedResult.title,
           })
           resetFormState()
-          onClose()
+          requestClose()
           return
         }
       }
@@ -255,7 +257,7 @@ export const AddMovieFlow: React.FC<AddMovieFlowProps> = ({
         title: createdMovie.title,
       })
       resetFormState()
-      onClose()
+      requestClose()
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Impossible d\'ajouter le film'
       setSubmitError(message)
@@ -281,7 +283,7 @@ export const AddMovieFlow: React.FC<AddMovieFlowProps> = ({
           className="closeButton"
           onClick={() => {
             resetFormState()
-            onClose()
+            requestClose()
           }}
           aria-label="Close add movie"
           title="Close (Esc)"
