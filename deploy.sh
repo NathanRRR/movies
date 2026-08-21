@@ -15,8 +15,12 @@ cd "$(dirname "$0")"
 echo "==> git pull"
 git pull --ff-only origin main
 
+echo "==> pull db image + rebuild api against fresh base image"
+docker compose pull db
+docker compose build --pull api
+
 echo "==> db + api"
-docker compose up -d --build db api
+docker compose up -d db api
 
 echo "==> web build"
 docker compose build web-build
