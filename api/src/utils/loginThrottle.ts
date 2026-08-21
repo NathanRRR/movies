@@ -12,11 +12,9 @@ type AttemptRecord = {
 const attemptsByKey = new Map<string, AttemptRecord>();
 
 function getClientKey(req: Request): string {
-  const forwardedFor = req.headers["x-forwarded-for"];
-  if (typeof forwardedFor === "string" && forwardedFor.trim() !== "") {
-    return forwardedFor.split(",")[0]?.trim() ?? req.ip ?? "unknown";
-  }
-
+  // req.ip is safe to trust here: "trust proxy" is set to 1 (see index.ts),
+  // so Express resolves it from the X-Forwarded-For entry nginx itself
+  // appended, not from whatever a client puts at the front of that header.
   return req.ip ?? "unknown";
 }
 

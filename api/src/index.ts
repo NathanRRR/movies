@@ -9,6 +9,7 @@ import { sendApiError } from "./lib/api-errors.js";
 import { requireAuth, sessionLoader } from "./middleware/session.js";
 
 const app = express();
+app.set("trust proxy", 1); // exactly one hop (nginx) in front of this process
 const prisma = new PrismaClient();
 const port = Number(process.env.PORT ?? 4000);
 
