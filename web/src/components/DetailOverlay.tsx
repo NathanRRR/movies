@@ -24,6 +24,7 @@ interface DetailOverlayProps {
   maxRank: number
   isReadOnly?: boolean
   onSave?: (movieId: number, updates: { lastWatchedAt?: string | null; reviewText?: string; rank?: number }) => Promise<void>
+  onDelete?: (movieId: number) => Promise<void>
 }
 
 export const DetailOverlay: React.FC<DetailOverlayProps> = ({
@@ -33,6 +34,7 @@ export const DetailOverlay: React.FC<DetailOverlayProps> = ({
   maxRank,
   isReadOnly = false,
   onSave,
+  onDelete,
 }) => {
   const modalRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
@@ -44,6 +46,8 @@ export const DetailOverlay: React.FC<DetailOverlayProps> = ({
   const [editRank, setEditRank] = useState(1)
   const [isSaving, setIsSaving] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
 
   // Initialize edit fields when movie changes
   useEffect(() => {
@@ -122,6 +126,28 @@ export const DetailOverlay: React.FC<DetailOverlayProps> = ({
       setSaveError(errorMsg)
     } finally {
       setIsSaving(false)
+    }
+  }
+
+  // Handle Delete
+  const handleDelete = async () => {
+    if (!movie || !onDelete || isReadOnly) return
+
+    const confirmed = window.confirm(`Supprimer "${movie.title}" de ta liste ? Cette action est irreversible.`)
+    if (!confirmed) return
+
+    setIsDeleting(true)
+    setDeleteError(null)
+
+    try {
+      await onDelete(movie.id)
+      requestClose()
+    } catch (error) {
+      const errorMsg =
+        error instanceof Error ? error.message : 'Failed to delete movie'
+      setDeleteError(errorMsg)
+    } finally {
+      setIsDeleting(false)
     }
   }
 
@@ -267,6 +293,22 @@ export const DetailOverlay: React.FC<DetailOverlayProps> = ({
               >
                 {isSaving ? 'Enregistrement...' : 'Enregistrer'}
               </button>
+
+              {onDelete ? (
+                <>
+                  {deleteError && (
+                    <p className="errorMessage">{deleteError}</p>
+                  )}
+                  <button
+                    className="deleteButton"
+                    onClick={handleDelete}
+                    disabled={isDeleting || isSaving}
+                    title="Supprimer ce film de la liste"
+                  >
+                    {isDeleting ? 'Suppression...' : 'Supprimer ce film'}
+                  </button>
+                </>
+              ) : null}
             </div>
           )}
         </div>

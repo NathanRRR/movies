@@ -267,6 +267,42 @@ app.patch("/api/movies/:id", requireAuth, async (req, res) => {
   }
 });
 
+app.delete("/api/movies/:id", requireAuth, async (req, res) => {
+  const movieIdParam = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+  const movieId = Number.parseInt(movieIdParam ?? "", 10);
+
+  if (isNaN(movieId)) {
+    sendApiError(res, 400, { code: "INVALID_MOVIE_ID", message: "Invalid movie ID" });
+    return;
+  }
+
+  try {
+    const currentMovie = await prisma.movie.findUnique({
+      where: { id: movieId },
+      select: { id: true, rank: true },
+    });
+
+    if (!currentMovie) {
+      sendApiError(res, 404, { code: "MOVIE_NOT_FOUND", message: "Movie not found" });
+      return;
+    }
+
+    await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+      await tx.movie.delete({ where: { id: movieId } });
+      await tx.movie.updateMany({
+        where: { rank: { gt: currentMovie.rank } },
+        data: { rank: { decrement: 1 } },
+      });
+    });
+
+    res.json({ id: movieId });
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error("Error deleting movie:", error);
+    sendApiError(res, 500, { code: "DELETE_MOVIE_FAILED", message: "Failed to delete movie" });
+  }
+});
+
 app.post("/api/movies", requireAuth, async (req, res) => {
   const { tmdbId, title, posterUrl, directorName, releaseDate, synopsis, rank } = req.body as {
     tmdbId?: number;

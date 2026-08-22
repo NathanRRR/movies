@@ -147,6 +147,21 @@ function EditorPage() {
     }
   }
 
+  const handleDeleteMovie = async (movieId: number) => {
+    const response = await fetch(apiUrl(`/api/movies/${movieId}`), {
+      method: 'DELETE',
+      credentials: 'include',
+    })
+
+    if (!response.ok) {
+      const errorData = (await response.json()) as { error?: string }
+      throw new Error(errorData.error || 'Failed to delete movie')
+    }
+
+    setSelectedMovie(null)
+    await loadMovies()
+  }
+
   const persistMovieOrder = async (orderedMovies: MovieCard[]) => {
     const response = await fetch(apiUrl('/api/movies/reorder'), {
       method: 'PATCH',
@@ -451,6 +466,7 @@ function EditorPage() {
         onClose={handleCloseOverlay}
         maxRank={movies.length}
         onSave={handleSaveMovieMetadata}
+        onDelete={handleDeleteMovie}
       />
       <AddMovieFlow
         isOpen={isAddMovieFlowOpen}

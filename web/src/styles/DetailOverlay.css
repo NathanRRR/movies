@@ -284,6 +284,34 @@
   opacity: 0.7;
 }
 
+/* Delete Button */
+.deleteButton {
+  width: 100%;
+  padding: 12px 16px;
+  margin-top: 8px;
+  background: transparent;
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.deleteButton:hover:not(:disabled) {
+  background: var(--color-danger-bg);
+}
+
+.deleteButton:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.deleteButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 /* Responsive for mobile */
 @media (max-width: 640px) {
   .detailOverlay {
